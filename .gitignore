@@ -1,0 +1,12 @@
+###############
+.DS_Store
+*.docx
+*.xlsx
+
+# VSC
+/.vscode
+*.vsix
+
+# Executable files
+schrage/schrage
+*.exe
