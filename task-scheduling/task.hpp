@@ -3,6 +3,7 @@
 
 struct Task
 {
+    int id;
     int R;
     int P;
     int Q;

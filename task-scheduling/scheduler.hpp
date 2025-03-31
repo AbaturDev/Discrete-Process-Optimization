@@ -15,7 +15,9 @@ public:
     void quickSort(int low, int high);
     int calculateC_max();
     const std::vector<Task>& getTasks() const;
-    int sortRQ();
+    void sortRQ();
+    void schrage();
+    void display_order();
     
 private:
     int partition(int low, int high);

@@ -15,11 +15,12 @@ int main()
         string fileName =  "data/data" + to_string(i+1) + ".txt";
 
         scheduler.readFileContent(fileName);
-        scheduler.quickSort(0, scheduler.getTasks().size() - 1);
+        //scheduler.sortRQ();
+        scheduler.schrage();
+        //scheduler.display_order();
+        cout << scheduler.calculateC_max() << endl;
 
-        cout << scheduler.sortRQ() << endl;
-
-        sum += scheduler.sortRQ();
+        sum += scheduler.calculateC_max();
     }
 
     cout << sum << endl;

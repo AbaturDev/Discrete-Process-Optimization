@@ -5,6 +5,11 @@
 
 using namespace std;
 
+static bool compareQ(const Task &a, const Task &b)
+{
+    return a.Q < b.Q;
+}
+
 int Scheduler::partition(int low, int high)
 {
     int pivot = tasks[high].R;
@@ -54,6 +59,7 @@ void Scheduler::readFileContent(string dataFile)
     for (int i = 0; i < numberOfTasks; i++)
     {
         Task task;
+        task.id = i + 1;
         file >> task.R >> task.P >> task.Q;
         tasks.push_back(task);
     }
@@ -84,9 +90,12 @@ const vector<Task>& Scheduler::getTasks() const
     return tasks;
 }
 
-int Scheduler::sortRQ()
+void Scheduler::sortRQ()
 {
+    quickSort(0, tasks.size() - 1);
+    
     int bestC_max = calculateC_max();
+    vector<Task> best_tasks = tasks;
 
     for (int i = 0; i < tasks.size(); i++)
     {
@@ -99,11 +108,59 @@ int Scheduler::sortRQ()
             if (newC_max < bestC_max)
             {
                 bestC_max = newC_max;
+                best_tasks = tasks;
             }
 
             swap(tasks[i], tasks[j]);
         }
     }
 
-    return bestC_max;
+    tasks = best_tasks;
+}
+
+void Scheduler::schrage()
+{
+    quickSort(0, tasks.size() - 1);
+
+    vector<Task> N = tasks;
+    vector<Task> G;
+    vector<Task> order;
+    
+    int t = 0;
+    int C_max = 0;
+
+    while(!N.empty() || !G.empty())
+    {
+        while(!N.empty() && N.front().R <= t)
+        {
+            G.push_back(N.front());
+            N.erase(N.begin());
+        }
+
+        if(!G.empty())
+        {
+            vector<Task>::iterator maxQ_it = max_element(G.begin(), G.end(), compareQ);
+
+            Task e = *maxQ_it;
+            G.erase(maxQ_it);
+
+            order.push_back(e);
+            t += e.P;
+            C_max = max(C_max, t + e.Q);
+        }
+        else
+        {
+            t = N.front().R;
+        }
+    }
+
+    tasks = order;
+}
+
+void Scheduler::display_order()
+{
+    for (const Task& task : tasks)
+    {
+        cout << task.id << " ";
+    } 
 }

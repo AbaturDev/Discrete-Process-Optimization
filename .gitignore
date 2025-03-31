@@ -8,5 +8,5 @@
 *.vsix
 
 # Executable files
-schrage/schrage
+task-scheduling/schrage
 *.exe
