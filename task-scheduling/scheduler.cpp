@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
+#include <unordered_set>
 
 using namespace std;
 
@@ -90,32 +92,46 @@ const vector<Task>& Scheduler::getTasks() const
     return tasks;
 }
 
-void Scheduler::sortRQ()
+void Scheduler::sortRQ(int maxIterations, int tabuSize)
 {
     quickSort(0, tasks.size() - 1);
     
+    vector<Task> bestSolution = tasks;
     int bestC_max = calculateC_max();
-    vector<Task> best_tasks = tasks;
+    unordered_set<string> tabuList;
 
-    for (int i = 0; i < tasks.size(); i++)
+    for (int iter = 0; iter < maxIterations; iter++)
     {
-        for (int j = i + 1; j < tasks.size(); j++)
+        vector<Task> bestNeighbor = tasks;
+        int bestNeighborC_max = bestC_max;
+        int swapIdx1 = -1, swapIdx2 = -1;
+
+        for (size_t i = 0; i < tasks.size() - 1; i++)
         {
-            swap(tasks[i], tasks[j]);
-
-            int newC_max = calculateC_max();
-
-            if (newC_max < bestC_max)
+            for (size_t j = i + 1; j < tasks.size(); j++)
             {
-                bestC_max = newC_max;
-                best_tasks = tasks;
+                swap(tasks[i], tasks[j]);
+                int newC_max = calculateC_max();
+                string move = to_string(i) + "," + to_string(j);
+                if (newC_max < bestNeighborC_max && tabuList.find(move) == tabuList.end())
+                {
+                    bestNeighborC_max = newC_max;
+                    bestNeighbor = tasks;
+                    swapIdx1 = i;
+                    swapIdx2 = j;
+                }
+                swap(tasks[i], tasks[j]);
             }
+        }
 
-            swap(tasks[i], tasks[j]);
+        if (swapIdx1 != -1)
+        {
+            tabuList.insert(to_string(swapIdx1) + "," + to_string(swapIdx2));
+            if (tabuList.size() > tabuSize) tabuList.erase(tabuList.begin());
+            tasks = bestNeighbor;
+            bestC_max = bestNeighborC_max;
         }
     }
-
-    tasks = best_tasks;
 }
 
 void Scheduler::schrage()

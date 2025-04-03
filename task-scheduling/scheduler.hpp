@@ -15,7 +15,7 @@ public:
     void quickSort(int low, int high);
     int calculateC_max();
     const std::vector<Task>& getTasks() const;
-    void sortRQ();
+    void sortRQ(int maxIterations, int tabuSize);
     void schrage();
     void display_order();
     
