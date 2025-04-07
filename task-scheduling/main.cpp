@@ -15,7 +15,8 @@ int main()
         string fileName =  "data/data" + to_string(i+1) + ".txt";
 
         scheduler.readFileContent(fileName);
-        //scheduler.sortRQ();
+        //scheduler.quickSort(0, scheduler.getTasks().size() - 1);
+        //scheduler.sortRQ(15,5);
         scheduler.schrage();
         //scheduler.display_order();
         cout << scheduler.calculateC_max() << endl;
