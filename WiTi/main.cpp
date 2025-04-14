@@ -5,12 +5,27 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello World" << endl;
+    int const fileCount = 11;
+    int sum = 0;
 
-    Scheduler scheduler;
+    for(int i = 0; i < fileCount; i++)
+    {
+        Scheduler scheduler;
 
-    scheduler.readFileContent("data/data10.txt");
-    cout << scheduler.delayCost() << endl;
+        string filePath = "data/data" + to_string(i+10) + ".txt";
+
+        scheduler.readFileContent(filePath);
+        scheduler.witiDP();
+        int coast = scheduler.delayCost();
+
+        cout << endl << "~~~~~~~~" << i+10 << "~~~~~~~~~" << endl;
+        cout<< coast << endl;
+        scheduler.displayOrder();
+
+        sum += coast;
+    }
+
+    cout << endl << "Sum: " << sum << endl;
 
     return 0;
 }

@@ -15,6 +15,7 @@ public:
     int delayCost();
     void displayOrder();
     const std::vector<Task>& getTasks() const;
+    void witiDP();
 };
 
 #endif
