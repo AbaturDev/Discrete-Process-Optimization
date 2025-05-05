@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <random>
+#include <algorithm>
 
 using namespace std;
 
@@ -54,22 +56,47 @@ void Tsp::readFileContent(const std::string& filePath, int skipLines)
 
 void Tsp::nearestNeighborMethod()
 {
+
 }
 
 void Tsp::randomSolution()
 {
+    auto rng = std::default_random_engine {};
+    shuffle(begin(cities), end(cities), rng);
 }
 
-string Tsp::get_order()
+string Tsp::getSolutionOrder()
 {
+    string order;
+
     for(const City& city : cities)
     {
-        cout << city.id << endl;
+        order += to_string(city.id) + " ";
     }
 
-    cout << countDistance(cities[0], cities[1]) << endl;
+    return order;
+}
 
-    return string();
+float Tsp::getSolutionDistance()
+{
+    float distance = 0;
+
+    for (int i = 0; i < cities.size() - 1; i++)
+    {
+        distance += countDistance(cities[i], cities[i+1]);
+    }
+
+    return distance;
+}
+
+void Tsp::writeSolution()
+{
+    const string filePath = "data/solution_order.txt";
+    ofstream file(filePath);
+
+    file << getSolutionOrder();
+
+    file.close();
 }
 
 float Tsp::countDistance(const City& cityA, const City& cityB) const

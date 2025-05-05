@@ -14,7 +14,9 @@ public:
     void readFileContent(const std::string& filePath, int skipLines);
     void nearestNeighborMethod();
     void randomSolution();
-    std::string get_order();
+    std::string getSolutionOrder();
+    float getSolutionDistance();
+    void writeSolution();
 
 private:
     float countDistance(const City& cityA, const City& cityB) const;

@@ -7,7 +7,11 @@ int main()
 {
     Tsp tsp;
     tsp.readFileContent("data/burma14.tsp", 8);
-    tsp.get_order();
+    tsp.randomSolution();
+    cout << tsp.getSolutionOrder() << endl;
+    cout << tsp.getSolutionDistance() << endl;
     
+    tsp.writeSolution();
+
     return 0;
 }
