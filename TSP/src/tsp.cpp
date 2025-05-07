@@ -56,13 +56,35 @@ void Tsp::readFileContent(const std::string& filePath, int skipLines)
 
 void Tsp::nearestNeighborMethod()
 {
+    City currentCity = cities.front();
 
+    vector<City> remainingCites = cities;
+    remainingCites.erase(remainingCites.begin());
+
+    vector<City> route;
+    route.push_back(currentCity);
+
+    while(!remainingCites.empty())
+    {
+        auto nearestCity = min_element(remainingCites.begin(), remainingCites.end(), [&](const City& a, const City& b)
+            {
+                return countDistance(currentCity, a) < countDistance(currentCity, b);
+            });
+        
+
+        currentCity = *nearestCity;
+        route.push_back(currentCity);
+        
+        remainingCites.erase(nearestCity);
+    }
+
+    cities = route;
 }
 
 void Tsp::randomSolution()
 {
     auto rng = std::default_random_engine {};
-    shuffle(begin(cities), end(cities), rng);
+    std::shuffle(cities.begin() + 1, cities.end(), rng);
 }
 
 string Tsp::getSolutionOrder()
@@ -72,6 +94,11 @@ string Tsp::getSolutionOrder()
     for(const City& city : cities)
     {
         order += to_string(city.id) + " ";
+    }
+
+    if(!cities.empty())
+    {
+        order += to_string(cities.front().id);
     }
 
     return order;
@@ -84,6 +111,11 @@ float Tsp::getSolutionDistance()
     for (int i = 0; i < cities.size() - 1; i++)
     {
         distance += countDistance(cities[i], cities[i+1]);
+    }
+
+    if(!cities.empty())
+    {
+        distance += countDistance(cities.back(), cities.front());
     }
 
     return distance;
