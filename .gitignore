@@ -12,3 +12,9 @@ task-scheduling/schrage
 WiTi/witi
 *.exe
 TSP/tsp
+
+# Python
+/venv
+.venv
+./venv
+*/venv

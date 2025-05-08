@@ -13,6 +13,22 @@ def load_order():
 
 def load_cities(filename, skip_lines):
     filePath = os.path.join(data_folder_dir, filename)
+    cities = {}
+    with open(filePath, 'r') as file:
+        for _ in range(int(skip_lines)):
+            next(file)
+
+        for line in file:
+            if "EOF" in line or line.strip() == "":
+                break
+            parts = line.strip().split()
+            if len(parts) < 3:
+                continue
+            city_id = int(parts[0])
+            x = float(parts[1])
+            y = float(parts[2])
+            cities[city_id] = (x, y)
+    return cities
 
 
 if __name__ == "__main__":
@@ -27,19 +43,17 @@ if __name__ == "__main__":
     cities = load_cities(cities_file_name, cities_skip_lines)    
 
 
+    coords = [cities[i] for i in order]
+    x, y = zip(*coords)
 
-# x = [cities[i][0] for i in order]
-# y = [cities[i][1] for i in order]
+    plt.scatter(*zip(*cities.values()), c='blue', s=100, label='Cities')
+    plt.plot(x, y, 'r-', linewidth=2, label='Path')
 
-# plt.scatter(*zip(*cities), c='blue', s=100, label='Miasta')
+    for city_id, (x_i, y_i) in cities.items():
+        plt.text(x_i + 0.2, y_i + 0.2, str(city_id), fontsize=9)
 
-# plt.plot(x, y, 'r-', linewidth=2, label='Trasa')
-
-# for i, (x_i, y_i) in enumerate(cities):
-#     plt.text(x_i + 0.1, y_i + 0.1, str(i), fontsize=12)
-
-# plt.title("Trasa Komiwojażera")
-# plt.legend()
-# plt.grid(True)
-# plt.axis("equal")
-# plt.show()
+    plt.title("Travelling Salesman Route")
+    plt.legend()
+    plt.grid(True)
+    plt.axis("equal")
+    plt.show()
