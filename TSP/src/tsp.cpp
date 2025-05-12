@@ -27,7 +27,7 @@ void Tsp::readFileContent(const std::string& filePath, int skipLines)
         {
             int size = 0;
             file >> size;
-            cities.reserve(size);
+            cities.reserve(size + 1);
         }
 
         continue;   
@@ -129,6 +129,57 @@ void Tsp::writeSolution()
     file << getSolutionOrder();
 
     file.close();
+}
+
+void Tsp::simulatedAnnealing(float tempStart, float alpha, int iterations, int innerLoop)
+{
+    randomSolution();
+
+    vector<City> currentPath = cities;
+    std::rotate(currentPath.begin(), currentPath.begin() + 1, currentPath.end()); // Przesuwamy, by miasto 1 było na początku
+    float currentDist = getSolutionDistance();
+
+    vector<City> bestPath = currentPath;
+    float bestDist = currentDist;
+
+    float temp = tempStart;
+
+    for (int i = 0; i < iterations; ++i)
+    {
+        for (int j = 0; j < innerLoop; ++j)
+        {
+            int a = rand() % (currentPath.size() - 1);
+            int b = rand() % (currentPath.size() - 1);
+            if (a > b) std::swap(a, b);
+
+            std::reverse(currentPath.begin() + a, currentPath.begin() + b + 1);
+
+            float newDist = 0.0f;
+            for (size_t k = 0; k < currentPath.size() - 1; ++k)
+                newDist += countDistance(currentPath[k], currentPath[k + 1]);
+            newDist += countDistance(currentPath.back(), currentPath.front());
+
+            float delta = newDist - currentDist;
+
+            if (delta < 0 || (exp(-delta / temp) > ((float)rand() / RAND_MAX)))
+            {
+                currentDist = newDist;
+                if (currentDist < bestDist)
+                {
+                    bestDist = currentDist;
+                    bestPath = currentPath;
+                }
+            }
+            else
+            {
+                std::reverse(currentPath.begin() + a, currentPath.begin() + b + 1);
+            }
+        }
+
+        temp *= alpha;
+    }
+
+    cities = bestPath;
 }
 
 float Tsp::countDistance(const City& cityA, const City& cityB) const
