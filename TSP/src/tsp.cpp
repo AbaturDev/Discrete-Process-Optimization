@@ -25,7 +25,6 @@ void Tsp::readFileContent(const std::string& filePath, int skipLines)
     {   
         if (line == "DIMENSION")
         {
-            int size = 0;
             file >> size;
             cities.reserve(size + 1);
         }
@@ -78,6 +77,8 @@ void Tsp::nearestNeighborMethod()
         remainingCites.erase(nearestCity);
     }
 
+    route.push_back(cities.front());
+
     cities = route;
 }
 
@@ -96,7 +97,7 @@ string Tsp::getSolutionOrder()
         order += to_string(city.id) + " ";
     }
 
-    if(!cities.empty())
+    if(!cities.empty() && cities.size() == size)
     {
         order += to_string(cities.front().id);
     }
@@ -113,7 +114,7 @@ float Tsp::getSolutionDistance()
         distance += countDistance(cities[i], cities[i+1]);
     }
 
-    if(!cities.empty())
+    if(!cities.empty() && cities.size() == size)
     {
         distance += countDistance(cities.back(), cities.front());
     }
@@ -136,7 +137,7 @@ void Tsp::simulatedAnnealing(float tempStart, float alpha, int iterations, int i
     randomSolution();
 
     vector<City> currentPath = cities;
-    std::rotate(currentPath.begin(), currentPath.begin() + 1, currentPath.end()); // Przesuwamy, by miasto 1 było na początku
+    std::rotate(currentPath.begin(), currentPath.begin() + 1, currentPath.end());
     float currentDist = getSolutionDistance();
 
     vector<City> bestPath = currentPath;
@@ -191,3 +192,32 @@ float Tsp::countDistance(const City& cityA, const City& cityB) const
 
     return distance;
 }
+
+void Tsp::twoOpt()
+{
+    bool improvement = true;
+    int sizeCities = cities.size();
+
+    while (improvement)
+    {
+        improvement = false;
+        for (int i = 1; i < sizeCities - 2; ++i)
+        {
+            for (int k = i + 1; k < sizeCities - 1; ++k)
+            {
+                float delta = 
+                    countDistance(cities[i - 1], cities[k]) +
+                    countDistance(cities[i], cities[k + 1]) -
+                    countDistance(cities[i - 1], cities[i]) -
+                    countDistance(cities[k], cities[k + 1]);
+
+                if (delta < -1e-6)
+                {
+                    reverse(cities.begin() + i, cities.begin() + k + 1);
+                    improvement = true;
+                }
+            }
+        }
+    }
+}
+
