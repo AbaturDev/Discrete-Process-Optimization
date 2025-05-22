@@ -40,8 +40,7 @@ if __name__ == "__main__":
     cities_skip_lines = sys.argv[2]
 
     order = load_order()    
-    cities = load_cities(cities_file_name, cities_skip_lines)    
-
+    cities = load_cities(cities_file_name, cities_skip_lines)
 
     coords = [cities[i] for i in order]
     x, y = zip(*coords)

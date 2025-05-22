@@ -97,7 +97,7 @@ string Tsp::getSolutionOrder()
         order += to_string(city.id) + " ";
     }
 
-    if(!cities.empty() && cities.size() == size)
+    if(!cities.empty() && cities.front().id != cities.back().id)
     {
         order += to_string(cities.front().id);
     }
@@ -114,7 +114,7 @@ float Tsp::getSolutionDistance()
         distance += countDistance(cities[i], cities[i+1]);
     }
 
-    if(!cities.empty() && cities.size() == size)
+    if(!cities.empty() && cities.front().id != cities.back().id)
     {
         distance += countDistance(cities.back(), cities.front());
     }
@@ -220,4 +220,3 @@ void Tsp::twoOpt()
         }
     }
 }
-

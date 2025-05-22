@@ -19,8 +19,10 @@ public:
     std::string getSolutionOrder();
     float getSolutionDistance();
     void writeSolution();
-    //void simulatedAnnealing(float tempStart = 10000.0f, float alpha = 0.976f, int iterations = 450, int innerLoop = 450);
-    void simulatedAnnealing(float tempStart = 10000.0f, float alpha = 0.976f, int iterations = 400, int innerLoop = 200); //kroA100 - optimal solution
+    //void simulatedAnnealing(float tempStart = 10000.0f, float alpha = 0.976f, int iterations = 400, int innerLoop = 100);   // default
+    void simulatedAnnealing(float tempStart = 10000.0f, float alpha = 0.976f, int iterations = 400, int innerLoop = 200);   // kroA100
+    //void simulatedAnnealing(float tempStart = 12500.0f, float alpha = 0.978f, int iterations = 500, int innerLoop = 300);   // kroA150
+    //void simulatedAnnealing(float tempStart = 18000.0f, float alpha = 0.985f, int iterations = 600, int innerLoop = 400);   // kroA200
 
 private:
     float countDistance(const City& cityA, const City& cityB) const;
