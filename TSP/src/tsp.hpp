@@ -24,8 +24,13 @@ public:
     //void simulatedAnnealing(float tempStart = 12500.0f, float alpha = 0.978f, int iterations = 500, int innerLoop = 300);   // kroA150
     //void simulatedAnnealing(float tempStart = 18000.0f, float alpha = 0.985f, int iterations = 600, int innerLoop = 400);   // kroA200
 
+    void geneticAlghoritm(int populationSize, int generations, float mutationRate);
+
 private:
     float countDistance(const City& cityA, const City& cityB) const;
+    float evaluate(const std::vector<City>& individual);
+    void mutate(std::vector<City>& individual, float mutationRate);
+    std::vector<City> crossover(const std::vector<City>& parent1, const std::vector<City>& parent2);
 };
 
 #endif
