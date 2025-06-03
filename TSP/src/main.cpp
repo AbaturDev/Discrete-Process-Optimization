@@ -18,7 +18,8 @@ int main()
     //tsp.simulatedAnnealing();
 
     //std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    tsp.geneticAlghoritm(100, 400, 0.17);
+    tsp.geneticAlgorithm(200, 1000, 0.17);
+    //tsp.twoOpt();
     //cout << "Time: " << chrono::duration_cast<chrono::nanoseconds>(end - begin).count() << "[ns]" << endl;
     cout << "Order: " << tsp.getSolutionOrder() << endl;
     cout << "Distance: " << tsp.getSolutionDistance() << endl;

@@ -4,12 +4,14 @@
 #include "city.hpp"
 #include <vector>
 #include <string>
+#include <random>
 
 class Tsp
 {
 private:
     int size;
     std::vector<City> cities;
+    std::mt19937 rng{ std::random_device{}() };
 
 public:
     void readFileContent(const std::string& filePath, int skipLines);
@@ -24,7 +26,7 @@ public:
     //void simulatedAnnealing(float tempStart = 12500.0f, float alpha = 0.978f, int iterations = 500, int innerLoop = 300);   // kroA150
     //void simulatedAnnealing(float tempStart = 18000.0f, float alpha = 0.985f, int iterations = 600, int innerLoop = 400);   // kroA200
 
-    void geneticAlghoritm(int populationSize, int generations, float mutationRate);
+    void geneticAlgorithm(int populationSize, int generations, float mutationRate);
 
 private:
     float countDistance(const City& cityA, const City& cityB) const;

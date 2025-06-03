@@ -5,6 +5,7 @@
 #include <cmath>
 #include <random>
 #include <algorithm>
+#include <unordered_set>
 
 using namespace std;
 
@@ -234,9 +235,9 @@ void Tsp::mutate(vector<City>& individual, float mutationRate)
 {
     if ((float)rand() / RAND_MAX < mutationRate)
     {
-        int a = rand() % individual.size();
-        int b = rand() % individual.size();
-        swap(individual[a], individual[b]);
+        int i = 1 + rand() % (individual.size() - 2);
+        int j = i + 1 + rand() % (individual.size() - i - 1);
+        std::reverse(individual.begin() + i, individual.begin() + j);
     }
 }
 
@@ -247,63 +248,70 @@ vector<City> Tsp::crossover(const vector<City>& parent1, const vector<City>& par
     int end = start + rand() % (size - start);
 
     vector<City> child(size, City{-1, -1, -1});
-    vector<bool> taken(size + 1, false);
+    unordered_set<int> used;
 
     for (int i = start; i <= end; ++i)
     {
         child[i] = parent1[i];
-        taken[parent1[i].id] = true;
+        used.insert(parent1[i].id);
     }
 
-    int current = 0;
+    int idx = (end + 1) % size;
     for (int i = 0; i < size; ++i)
     {
-        if (!taken[parent2[i].id])
+        const City& c = parent2[(end + 1 + i) % size];
+        if (used.count(c.id) == 0)
         {
-            while (child[current].id != -1)
-                current++;
-            child[current] = parent2[i];
+            child[idx] = c;
+            idx = (idx + 1) % size;
         }
     }
 
     return child;
 }
 
-void Tsp::geneticAlghoritm(int populationSize, int generations, float mutationRate)
+void Tsp::geneticAlgorithm(int populationSize, int generations, float mutationRate)
 {
-    vector<vector<City>> population;
+    std::vector<std::vector<City>> population;
 
     for (int i = 0; i < populationSize; i++)
     {
-        vector<City> individual = cities;
-        shuffle(individual.begin() + 1, individual.end(), default_random_engine(rand()));
+        std::vector<City> individual = cities;
+        std::shuffle(individual.begin() + 1, individual.end(), rng);
         population.push_back(individual);
     }
 
-    for (int i = 0; i < generations; i++)
+    float bestDistance = std::numeric_limits<float>::max();
+    std::vector<City> bestSolution;
+
+    for (int g = 0; g < generations; g++)
     {
         std::sort(population.begin(), population.end(), [&](const auto& a, const auto& b)
         {
             return evaluate(a) < evaluate(b);
         });
 
-        int eliteCount = populationSize * 0.2;
+        if (evaluate(population.front()) < bestDistance)
+        {
+            bestDistance = evaluate(population.front());
+            bestSolution = population.front();
+        }
 
-        vector<vector<City>> newPopulation(population.begin(), population.begin() + eliteCount);
+        int eliteCount = std::max(1, (int)(populationSize * 0.2));
+
+        std::vector<std::vector<City>> newPopulation(population.begin(), population.begin() + eliteCount);
 
         while (newPopulation.size() < populationSize)
         {
             int i1 = rand() % eliteCount;
             int i2 = rand() % eliteCount;
-
             auto child = crossover(population[i1], population[i2]);
             mutate(child, mutationRate);
             newPopulation.push_back(child);
         }
 
         population = newPopulation;
-
     }
 
-    cities = population.front();
+    cities = bestSolution;
 }
