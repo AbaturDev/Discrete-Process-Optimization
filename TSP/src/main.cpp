@@ -8,7 +8,7 @@ int main()
 {
     Tsp tsp;
     tsp.readFileContent("data/kroA100.tsp", 6);
-    //std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     
     //tsp.randomSolution();
 
@@ -16,11 +16,10 @@ int main()
     //tsp.twoOpt();
 
     //tsp.simulatedAnnealing();
-
-    //std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     tsp.geneticAlgorithm(200, 1000, 0.17);
-    //tsp.twoOpt();
-    //cout << "Time: " << chrono::duration_cast<chrono::nanoseconds>(end - begin).count() << "[ns]" << endl;
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    cout << "Time: " << chrono::duration_cast<chrono::nanoseconds>(end - begin).count() << "[ns]" << endl;
     cout << "Order: " << tsp.getSolutionOrder() << endl;
     cout << "Distance: " << tsp.getSolutionDistance() << endl;
     
